@@ -1,0 +1,9 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:Label text="Player Color Preview" name="color_preview" style="text-shadow: 0 0 0 rgb(0, 0, 0); display: flex; background-color: rgb(255, 0, 0);" />
+    <ui:Slider label="Red" value="0" high-value="1" name="r_slider" style="color: rgb(255, 54, 54);" />
+    <ui:Slider label="Green" value="0.8" high-value="1" name="g_slider" style="color: rgb(0, 173, 0);" />
+    <ui:Slider label="Blue" value="0" high-value="1" name="b_slider" style="color: rgb(0, 5, 255);" />
+    <ui:Button text="Start Host" name="start_host" enabled="true" style="text-overflow: clip; display: flex; visibility: visible;" />
+    <ui:Button text="Connect to Server" name="connect" enabled="true" />
+    <ui:Button text="Disconnect" name="disconnect" style="display: none;" />
+</ui:UXML>
