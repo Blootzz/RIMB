@@ -609,6 +609,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+  forward: 119
+  backward: 115
+  left: 100
+  right: 97
   cameraTransformTarget: {fileID: 8374828170754407923}
 --- !u!114 &2174297461298008426
 MonoBehaviour:
