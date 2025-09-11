@@ -120,6 +120,10 @@ public class CapManControl : NetworkBehaviour
 
     void FixedUpdate()
     {
+        if (!IsOwner)
+        {
+            return;
+        }
         // Physics related stuff MUST happen here bc the physics engine runs on the same fixed update.
         if (Cursor.lockState != CursorLockMode.None)
         {
@@ -131,6 +135,10 @@ public class CapManControl : NetworkBehaviour
 
     void Update()
     {
+        if (!IsOwner)
+        {
+            return;
+        }
         if (Cursor.lockState != CursorLockMode.None)
         {
             Vector2 lookVec = (Vector2)(look?.ReadValue<Vector2>());

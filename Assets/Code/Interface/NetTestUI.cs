@@ -3,6 +3,8 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.InputSystem;
 using Unity.Netcode.Transports.UTP;
+using UnityEngine.TextCore;
+using Netcode.Transports.Facepunch;
 
 public class NetTestUI : MonoBehaviour
 {
@@ -47,6 +49,22 @@ public class NetTestUI : MonoBehaviour
         InputAction mouseLockToggle = InputSystem.actions.FindAction("MouseLockToggle");
         if (mouseLockToggle != null)
             mouseLockToggle.performed += ToggleMouseLock;
+
+        // Transport host field setup
+        NetworkTransport transport = nm.GetComponent<NetworkTransport>();
+        if (transport != null)
+        {
+            if (transport is UnityTransport)
+            {
+                // Standard UTP direct connect transport
+                ipAddressField.label = "IP Address";
+            }
+            else if (transport is FacepunchTransport)
+            {
+                // Steamworks transport
+                ipAddressField.label = "Target Steam ID";
+            }
+        }
     }
 
     void OnDisable()
@@ -118,9 +136,20 @@ public class NetTestUI : MonoBehaviour
         NetworkManager nm = NetworkManager.Singleton;
         if (nm == null)
             return;
-        UnityTransport transport = nm.GetComponent<UnityTransport>();
+        NetworkTransport transport = nm.GetComponent<NetworkTransport>();
         if (!nm.IsListening)
-            transport.SetConnectionData(ipAddressField.value, transport.ConnectionData.Port);
+        {
+            if (transport is UnityTransport)
+            {
+                UnityTransport ut = (UnityTransport)transport;
+                ut.SetConnectionData(ipAddressField.value, ut.ConnectionData.Port);
+            }
+            else if (transport is FacepunchTransport)
+            {
+                FacepunchTransport ft = (FacepunchTransport)transport;
+                ft.targetSteamId = ulong.Parse(ipAddressField.value);
+            }
+        }
         if (nm.IsClient || (!nm.IsListening && nm.StartClient()))
                 DisplayConnected("Disconnect");
             else if (nm.IsHost)
