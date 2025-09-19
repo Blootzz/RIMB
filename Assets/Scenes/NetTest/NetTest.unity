@@ -266,7 +266,7 @@ MeshCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 494064506}
-  m_Material: {fileID: 13400000, guid: 62b4e1d481098404790d8a855a8d562a, type: 2}
+  m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -496,6 +496,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1869661260}
   - component: {fileID: 1869661259}
+  - component: {fileID: 1869661261}
   - component: {fileID: 1869661262}
   m_Layer: 0
   m_Name: NetworkManager
@@ -519,7 +520,7 @@ MonoBehaviour:
   NetworkManagerExpanded: 0
   NetworkConfig:
     ProtocolVersion: 0
-    NetworkTransport: {fileID: 1869661262}
+    NetworkTransport: {fileID: 1869661261}
     PlayerPrefab: {fileID: 8871583753232769324, guid: ea966f8f337f858bb9cf0146537bf570, type: 3}
     Prefabs:
       NetworkPrefabsLists:
@@ -562,7 +563,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1869661262
+--- !u!114 &1869661261
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -591,6 +592,18 @@ MonoBehaviour:
     PacketDelayMS: 0
     PacketJitterMS: 0
     PacketDropRate: 0
+--- !u!114 &1869661262
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1869661257}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88d538e6277d614b9ba3674ff4bd1902, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2086873000
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,8 +1,10 @@
 using Unity.Netcode;
-using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
+using UnityEngine.InputSystem;
+using Unity.Netcode.Transports.UTP;
+using UnityEngine.TextCore;
+using Netcode.Transports.Facepunch;
 
 public class NetTestUI : MonoBehaviour
 {
@@ -12,9 +14,11 @@ public class NetTestUI : MonoBehaviour
     private Slider rSlider;
     private Slider gSlider;
     private Slider bSlider;
+    private Slider sensitivitySlider;
     private Button connectBtn;
     private Button disconnectBtn;
     private Button startHostBtn;
+    private TextField ipAddressField;
 
     void OnEnable()
     {
@@ -24,19 +28,74 @@ public class NetTestUI : MonoBehaviour
         rSlider = root.Q<Slider>("r_slider");
         gSlider = root.Q<Slider>("g_slider");
         bSlider = root.Q<Slider>("b_slider");
+        sensitivitySlider = root.Q<Slider>("sensitivity");
         connectBtn = root.Q<Button>("connect");
         disconnectBtn = root.Q<Button>("disconnect");
         startHostBtn = root.Q<Button>("start_host");
+        ipAddressField = root.Q<TextField>("server_address");
         UpdateColorPreview();
         rSlider.RegisterValueChangedCallback(OnSliderUpdate);
         gSlider.RegisterValueChangedCallback(OnSliderUpdate);
         bSlider.RegisterValueChangedCallback(OnSliderUpdate);
+        sensitivitySlider.RegisterValueChangedCallback(UpdateSensitivity);
         connectBtn.clicked += OnConnect;
         disconnectBtn.clicked += OnDisconnect;
         startHostBtn.clicked += OnStartHost;
         NetworkManager nm = NetworkManager.Singleton;
         if (nm != null)
-            NetworkManager.Singleton.OnPreShutdown += OnDisconnect; // Will happen automatically on clients if the server shuts down.
+            NetworkManager.Singleton.OnPreShutdown += ResetDisplay; // Will happen automatically on clients if the server shuts down.
+
+        // Interface locks
+        InputAction mouseLockToggle = InputSystem.actions.FindAction("MouseLockToggle");
+        if (mouseLockToggle != null)
+            mouseLockToggle.performed += ToggleMouseLock;
+
+        // Transport host field setup
+        NetworkTransport transport = nm.GetComponent<NetworkTransport>();
+        if (transport != null)
+        {
+            if (transport is UnityTransport)
+            {
+                // Standard UTP direct connect transport
+                ipAddressField.label = "IP Address";
+            }
+            else if (transport is FacepunchTransport)
+            {
+                // Steamworks transport
+                ipAddressField.label = "Target Steam ID";
+            }
+        }
+    }
+
+    void OnDisable()
+    {
+        connectBtn.clicked -= OnConnect;
+        disconnectBtn.clicked -= OnDisconnect;
+        startHostBtn.clicked -= OnStartHost;
+        rSlider.UnregisterValueChangedCallback(OnSliderUpdate);
+        gSlider.UnregisterValueChangedCallback(OnSliderUpdate);
+        bSlider.UnregisterValueChangedCallback(OnSliderUpdate);
+        sensitivitySlider.UnregisterValueChangedCallback(UpdateSensitivity);
+        NetworkManager nm = NetworkManager.Singleton;
+        if (nm != null)
+            NetworkManager.Singleton.OnPreShutdown -= ResetDisplay;
+    }
+
+    void ToggleMouseLock(InputAction.CallbackContext context)
+    {
+        if (UnityEngine.Cursor.lockState == CursorLockMode.None)
+            UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+        else
+            UnityEngine.Cursor.lockState = CursorLockMode.None;
+    }
+
+    void UpdateSensitivity(ChangeEvent<float> e)
+    {
+        CapManControl[] players = FindObjectsByType<CapManControl>(FindObjectsSortMode.None);
+        foreach (CapManControl player in players)
+        {
+            player.LookSensitivity = e.newValue;
+        }
     }
 
     void UpdateColorPreview()
@@ -55,19 +114,6 @@ public class NetTestUI : MonoBehaviour
     void OnSliderUpdate(ChangeEvent<float> e)
     {
         UpdateColorPreview();
-    }
-
-    void OnDisable()
-    {
-        connectBtn.clicked -= OnConnect;
-        disconnectBtn.clicked -= OnDisconnect;
-        startHostBtn.clicked -= OnStartHost;
-        rSlider.UnregisterValueChangedCallback(OnSliderUpdate);
-        gSlider.UnregisterValueChangedCallback(OnSliderUpdate);
-        bSlider.UnregisterValueChangedCallback(OnSliderUpdate);
-        NetworkManager nm = NetworkManager.Singleton;
-        if (nm != null)
-            NetworkManager.Singleton.OnPreShutdown -= OnDisconnect;
     }
 
     void ResetDisplay()
@@ -90,12 +136,24 @@ public class NetTestUI : MonoBehaviour
         NetworkManager nm = NetworkManager.Singleton;
         if (nm == null)
             return;
+        NetworkTransport transport = nm.GetComponent<NetworkTransport>();
+        if (!nm.IsListening)
+        {
+            if (transport is UnityTransport)
+            {
+                UnityTransport ut = (UnityTransport)transport;
+                ut.SetConnectionData(ipAddressField.value, ut.ConnectionData.Port);
+            }
+            else if (transport is FacepunchTransport)
+            {
+                FacepunchTransport ft = (FacepunchTransport)transport;
+                ft.targetSteamId = ulong.Parse(ipAddressField.value);
+            }
+        }
         if (nm.IsClient || (!nm.IsListening && nm.StartClient()))
-            DisplayConnected("Disconnect");
-        else if (nm.IsHost)
-            DisplayConnected("Stop Host");
-        else
-            ResetDisplay();
+                DisplayConnected("Disconnect");
+            else if (nm.IsHost)
+                DisplayConnected("Stop Host");
     }
 
     void OnDisconnect()
@@ -115,8 +173,6 @@ public class NetTestUI : MonoBehaviour
             DisplayConnected("Stop Host");
         else if (nm.IsClient)
             DisplayConnected("Disconnect");
-        else
-            ResetDisplay();
     }
 
 }

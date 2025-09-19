@@ -3,6 +3,8 @@
     <ui:Slider label="Red" value="0" high-value="1" name="r_slider" style="color: rgb(255, 54, 54);" />
     <ui:Slider label="Green" value="0.8" high-value="1" name="g_slider" style="color: rgb(0, 173, 0);" />
     <ui:Slider label="Blue" value="0" high-value="1" name="b_slider" style="color: rgb(0, 5, 255);" />
+    <ui:Slider label="Look sensitivity" value="0" high-value="2" low-value="0.01" name="sensitivity" style="color: rgb(29, 29, 29);" />
+    <ui:TextField label="Server address" placeholder-text="filler text" value="127.0.0.1" name="server_address" style="background-color: rgba(0, 0, 0, 0); color: rgb(29, 29, 29); -unity-background-image-tint-color: rgb(0, 0, 0); text-shadow: 0 0 0 rgb(0, 0, 0);" />
     <ui:Button text="Start Host" name="start_host" enabled="true" style="text-overflow: clip; display: flex; visibility: visible;" />
     <ui:Button text="Connect to Server" name="connect" enabled="true" />
     <ui:Button text="Disconnect" name="disconnect" style="display: none;" />
