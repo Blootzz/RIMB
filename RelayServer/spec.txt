@@ -1,0 +1,52 @@
+Simple "dumb" relay that enforces its own identification system but has no knowledge of the underlying
+UDP protocol it is forwarding. Is capable of routing UTP or virtually any UDP based protocol.
+
+------ SPECIFICATIONS ------
+
+PEER GROUPS
+A peer group will always have an owner. The peer with the lowest index in the peer list will always
+have ownership. Whether or not the peer group is destroyed following the disconnect of an owner depends
+on the owner promotion flag. By default, promotion will be disabled.
+
+Peer groups are intended to obfuscate user UUIDs. All peers will be given client ids which originate
+from an internal counter (ulong).
+
+A peer can only be on one active peer group at a time.
+
+During routing, client id 0 will always route to the client with the lowest client id.
+If routing a client-server connection through the peer group, all clients should route to this id.
+Routing to maxint will instead broadcast to all peers.
+
+A peer group can be polled at any given time to retrieve the full list of client ids.
+The maximum number of peers for a peer group is 255. This is to limit the size of the polling message.
+Polling messages will be truncated if the number of connected peers is < 255.
+
+All peers will be given a short lived peer UUID. This UUID will be used during routing to verify
+the sender's identity. Peer UUIDs will be destroyed once a peer leaves the peer group.
+
+CONTROL SERVER
+A TCP connection must remain open between all clients at any given time.
+Connecting to the server creates a session UUID. Upon disconnecting, this UUID will become invalid.
+
+All server messaging that requires reliable communication such as authentication, peer group joining,
+configuration, etc, must be done through TCP.
+
+User UUIDs (along with all derived forms of identification) will be restricted to the originating
+IP address to prevent basic spoofing attacks. If a client disconnects, there will be a brief
+60 second window to reconnect either with the same IP address or a new IP address. Given that
+multiple users can operate under the same public IP, UUIDs will still remain the primary form of
+identification.
+
+ROUTING SERVER
+All UDP messages must contain the following
+[Sender peer UUID (16 bytes)][Recipient Client ID (uint32, 4 bytes)] ---
+[Message payload (? bytes)]
+
+Upon verification at the relay, the header will be stripped and only the original payload will be sent
+to the intended receiver.
+
+Any message received over UDP that either lack a valid sender UUID or contains an incorrect client ID
+will have their messages silently dropped.
+
+FOR SMALL SCALE TESTING PURPOSES ONLY
+DO NOT USE IN A PRODUCTION ENVIRONMENT WITHOUT SIGNIFICANT IMPROVEMENTS IN SECURITY/PERFORMANCE!
