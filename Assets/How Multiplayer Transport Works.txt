@@ -1,0 +1,13 @@
+Disable UnityTransport component on NetworkManager
+On NetworkManager, add FacePunch Transport
+Spacewar ID: 480 (set by default)
+
+Host:
+Open Steam
+Hit Play
+In FacePunch Transport, right click "User Steam Id" to copy
+Michael's - 76561198144468854
+Ian's - 76561198068062370
+
+Client:
+Paste into Facepunch Transport "Target Steam Id"
