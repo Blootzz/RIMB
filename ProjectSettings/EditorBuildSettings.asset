@@ -16,7 +16,7 @@ EditorBuildSettings:
     guid: 2ea6295ad64fef495ae97f9c91f05fb8
   - enabled: 0
     path: Assets/Scenes/NetTest.unity
-    guid: 00000000000000000000000000000000
+    guid: ed2f443702e4a88e78efb15fab3134bd
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
