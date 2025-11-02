@@ -1,0 +1,9 @@
+﻿<Solution>
+  <Project Path="Assembly-CSharp-Editor.csproj" />
+  <Project Path="Player.csproj" />
+  <Project Path="Facepunch Transport for Netcode for GameObjects.csproj" />
+  <Project Path="Server.csproj" />
+  <Project Path="Utility.csproj" />
+  <Project Path="Assembly-CSharp.csproj" />
+  <Project Path="Interface.csproj" />
+</Solution>
