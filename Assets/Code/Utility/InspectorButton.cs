@@ -21,7 +21,7 @@ using System.Reflection;
 [System.AttributeUsage(System.AttributeTargets.Field)]
 public class InspectorButtonAttribute : PropertyAttribute
 {
-    public static float kDefaultButtonWidth = 80;
+    public static float kDefaultButtonWidth = 100;
 
     public readonly string MethodName;
 
